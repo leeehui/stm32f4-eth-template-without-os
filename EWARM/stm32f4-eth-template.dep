@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3278043785</fileChecksum>
+  <configuration>
+    <name>stm32f4-eth-template</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\Src\main.c</file>
+      <file>$PROJ_DIR$\startup_stm32f407xx.s</file>
+      <file>$PROJ_DIR$\..\Src\ethernetif.c</file>
+      <file>$PROJ_DIR$\..\Src\stm32f4xx_it.c</file>
+      <file>$PROJ_DIR$\..\Bsp\debug_usart\debug_usart.c</file>
+      <file>$PROJ_DIR$\..\Src\lwip.c</file>
+      <file>$PROJ_DIR$\..\Src\stm32f4xx_hal_msp.c</file>
+      <file>$PROJ_DIR$\..\Bsp\ws2812\light_ws2812_cortex.s</file>
+      <file>$PROJ_DIR$\..\Apps\tcp_led_ctrl\tcp_led_ctrl.c</file>
+    </outputs>
+  </configuration>
+</project>
+
+
