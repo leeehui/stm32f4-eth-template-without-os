@@ -321,7 +321,11 @@
           <state>$PROJ_DIR$/../Drivers/CMSIS/Include</state>
           <state>$PROJ_DIR$\..\Bsp\ws2812</state>
           <state>$PROJ_DIR$\..\Bsp\debug_usart</state>
-          <state>D:\STM32\CubeMXTemplates\stm32f4-eth-template-without-os\Apps\tcp_led_ctrl</state>
+          <state>$PROJ_DIR$\..\Apps\tcp_led_ctrl</state>
+          <state>$PROJ_DIR$\..\Middlewares\Third_Party\QP\include</state>
+          <state>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar</state>
+          <state>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source</state>
+          <state>$PROJ_DIR$\..\Apps\tcp_server</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -984,10 +988,16 @@
         <name>$PROJ_DIR$\..\Src\main.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Apps\tcp_server\netconf.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\stm32f4xx_hal_msp.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\stm32f4xx_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Apps\tcp_server\tcp_echoserver.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Apps\tcp_led_ctrl\tcp_led_ctrl.c</name>
@@ -1295,9 +1305,66 @@
     </group>
     <group>
       <name>QP</name>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qep_hsm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qep_msm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_act.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_actq.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_defer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_dyn.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_mem.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_pkg.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_ps.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_qact.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_qeq.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_qmact.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qf_time.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\source\qv.c</name>
+      </file>
     </group>
     <group>
       <name>QP_port</name>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar\qep_port.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar\qf_port.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar\qs_port.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar\qv_port.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\QP\ports\arm-cm\qv\iar\qv_port.h</name>
+      </file>
     </group>
   </group>
 </project>

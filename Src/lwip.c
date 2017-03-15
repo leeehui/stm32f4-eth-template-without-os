@@ -46,6 +46,7 @@
 #include "lwip.h"
 #include "lwip/init.h"
 #include "lwip/netif.h"
+#include "debug_usart.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -68,7 +69,25 @@ uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 
 /* USER CODE BEGIN 2 */
-
+#if 1
+void ethernetif_notify_conn_changed(struct netif *netif)
+{
+  /* NOTE : This is function could be implemented in user file 
+            when the callback is needed,
+  */
+#if 1
+  if(netif_is_link_up(&gnetif))
+  {
+    tcp_echoserver_init();
+  }
+  else
+  {
+    close_echoserver();
+    netif_remove(&gnetif);
+  } 
+#endif
+}
+#endif
 /* USER CODE END 2 */
 
 /**
@@ -80,7 +99,7 @@ void MX_LWIP_Init(void)
   IP_ADDRESS[0] = 192;
   IP_ADDRESS[1] = 168;
   IP_ADDRESS[2] = 0;
-  IP_ADDRESS[3] = 122;
+  IP_ADDRESS[3] = 102;
   NETMASK_ADDRESS[0] = 255;
   NETMASK_ADDRESS[1] = 255;
   NETMASK_ADDRESS[2] = 255;
@@ -108,13 +127,16 @@ void MX_LWIP_Init(void)
   {
     /* When the netif is fully configured this function must be called */
     netif_set_up(&gnetif);
+    debug(info,"link up at power on");
   }
   else
   {
     /* When the netif link is down this function must be called */
     netif_set_down(&gnetif);
+    debug(info, "link down at power on");
   }
 
+  netif_set_link_callback(&gnetif, ethernetif_update_config);
 /* USER CODE BEGIN 3 */
 
 /* USER CODE END 3 */

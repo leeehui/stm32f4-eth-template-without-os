@@ -44,6 +44,8 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "lwip.h"
+#include "debug_usart.h"
+
 
 /* USER CODE BEGIN Includes */
 
@@ -69,7 +71,39 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+static void EXTILine0_Config(void)
+{
+  GPIO_InitTypeDef   GPIO_InitStructure;
 
+  /* Enable GPIOA clock */
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  
+  /* Configure PA0 pin as input floating */
+  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStructure.Pull = GPIO_PULLUP;
+  GPIO_InitStructure.Pin = GPIO_PIN_0;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+  /* Enable and set EXTI Line0 Interrupt to the lowest priority */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+extern struct netif gnetif;
+extern uint32_t is_need_polling;
+
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    //netif_set_link_down(&gnetif);
+    //printf("link down from interrupt\n");
+  //delay_ms(2000);
+
+  //ethernetif_set_link_polling(&gnetif);
+      netif_set_link_down(&gnetif);
+      is_need_polling = 1;
+      debug(info, "link down");
+}
 /* USER CODE END 0 */
 
 int main(void)
@@ -91,9 +125,10 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   MX_LWIP_Init();
-
+  EXTILine0_Config();
+  debug(info, "start.");
   /* USER CODE BEGIN 2 */
-
+  tcp_echoserver_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,6 +136,13 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
+    //if (HAL_ETH_CheckFrameReceived())
+    //{ 
+      /* process received ethernet packet*/
+    //  LwIP_Pkt_Handle();
+    //}
+    /* handle periodic timers for LwIP*/
+    LwIP_Periodic_Handle(sys_now());
 
   /* USER CODE BEGIN 3 */
 

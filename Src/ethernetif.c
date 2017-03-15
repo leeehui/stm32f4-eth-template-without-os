@@ -53,6 +53,10 @@
 #include "lwip/ethip6.h"
 #include "ethernetif.h"
 #include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "debug_usart.h"
+
 
 /* Within 'USER CODE' section, code will be kept by default at each generation */
 /* USER CODE BEGIN 0 */
@@ -147,9 +151,9 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(ETH_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(ETH_IRQn);
-    HAL_NVIC_SetPriority(ETH_WKUP_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(ETH_WKUP_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(ETH_WKUP_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
 
@@ -227,7 +231,7 @@ static void low_level_init(struct netif *netif)
   MACAddr[4] = 0x00;
   MACAddr[5] = 0x00;
   heth.Init.MACAddr = &MACAddr[0];
-  heth.Init.RxMode = ETH_RXPOLLING_MODE;
+  heth.Init.RxMode = ETH_RXINTERRUPT_MODE;//ETH_RXPOLLING_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
 
@@ -281,6 +285,7 @@ static void low_level_init(struct netif *netif)
 /* USER CODE END PHY_PRE_CONFIG */
   
  
+#if 1
  //lenli start
   /* Read Register Configuration */
   HAL_ETH_ReadPHYRegister(&heth, PHY_IMR, &regvalue);
@@ -292,7 +297,7 @@ static void low_level_init(struct netif *netif)
   /* Read Register Configuration */
   HAL_ETH_ReadPHYRegister(&heth, PHY_IMR , &regvalue);
  //lenli end
- 
+#endif 
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
     
@@ -635,21 +640,51 @@ void ethernetif_set_link(struct netif *netif)
   if((regvalue & PHY_ISFR_INT4) != (uint16_t)RESET)
   {
     /* Read PHY_SR*/
-    HAL_ETH_ReadPHYRegister(&heth, PHY_BCR, &regvalue);
+    HAL_ETH_ReadPHYRegister(&heth, PHY_BSR, &regvalue);
     
     /* Check whether the link is up or down*/
     if((regvalue & PHY_LINKED_STATUS)!= (uint16_t)RESET)
     {
       netif_set_link_up(netif);
+      debug(info,"link up");
     }
     else
     {
-      netif_set_link_down(netif);
+       netif_set_link_down(netif);
+      debug(info,"link down");
     }
   }
   //lenli end
 }
+
+uint32_t is_need_polling = 0;
+
+void ethernetif_set_link_polling(struct netif *netif)
  
+{
+  uint32_t regvalue = 0;
+ 
+  //lenli start
+  if(is_need_polling)
+  {
+    /* Read PHY_SR*/
+    HAL_ETH_ReadPHYRegister(&heth, PHY_BSR, &regvalue);
+    
+    /* Check whether the link is up or down*/
+    if((regvalue & PHY_LINKED_STATUS)!= (uint16_t)RESET)
+    {
+      netif_set_link_up(netif);
+      is_need_polling = 0;
+      debug(info,"link up");
+    }
+    else
+    {
+       netif_set_link_down(netif);
+      debug(info,"link down");
+    }
+  }
+  //lenli end
+}
 
 /* USER CODE BEGIN 7 */
 
@@ -667,8 +702,13 @@ void ethernetif_update_config(struct netif *netif)
   __IO uint32_t tickstart = 0;
   uint32_t regvalue = 0;
   
+#if 1
   if(netif_is_link_up(netif))
   { 
+    
+    MX_LWIP_Init();
+    debug(info,"MX_LWIP_Init...");
+#if 0    
     /* Restart the auto-negotiation */
     if(heth.Init.AutoNegotiation != ETH_AUTONEGOTIATION_DISABLE)
     {
@@ -734,13 +774,14 @@ void ethernetif_update_config(struct netif *netif)
 
     /* Restart MAC interface */
     HAL_ETH_Start(&heth);   
+#endif
   }
   else
   {
     /* Stop MAC interface */
     HAL_ETH_Stop(&heth);
   }
-
+#endif
   ethernetif_notify_conn_changed(netif);
 }
 
