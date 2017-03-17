@@ -143,9 +143,10 @@ void test()
 	//}
 }
 	
+extern  __IO uint32_t uwTick;
 static void trigger_led()
 {
-	//__set_PRIMASK(1);
+	__set_PRIMASK(1);
 #if 1
 	ws2812_send(&led_buffer[0][0], 
 							   &led_buffer[1][0],
@@ -156,7 +157,10 @@ static void trigger_led()
 							   led_num_to_send * 3
 								);
 #endif
-	//__set_PRIMASK(0);
+	__set_PRIMASK(0);
+        
+       uwTick += 28;
+
 }
 
 void send_ack(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es, uint8_t cmd, uint8_t status)

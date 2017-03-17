@@ -143,8 +143,9 @@ int main(void)
     //  LwIP_Pkt_Handle();
     //}
     /* handle periodic timers for LwIP*/
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_RESET);
     LwIP_Periodic_Handle(sys_now());
-
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_SET);
   /* USER CODE BEGIN 3 */
 
   }
