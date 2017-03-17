@@ -67,6 +67,7 @@ void LwIP_DHCP_Process_Handle(void);
 void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 {
   ethernetif_input(&gnetif);
+
 }
 
 /**

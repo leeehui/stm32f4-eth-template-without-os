@@ -30,6 +30,7 @@
         SECTION .text:CODE:REORDER:NOROOT(2)
         thumb
 ws2812_send:
+        cpsid i
         stmfd sp,{r4-r11}
         ldr r4, [sp]          ;*data4
         ldr r5, [sp, #4]      ;*data5  
@@ -347,5 +348,6 @@ byte_end:
 all_end:    
         sub r0, sp, #32
         ldmfd r0,{r4-r11}
+        cpsie i
         mov pc, lr
         END

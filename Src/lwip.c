@@ -69,25 +69,7 @@ uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 
 /* USER CODE BEGIN 2 */
-#if 1
-void ethernetif_notify_conn_changed(struct netif *netif)
-{
-  /* NOTE : This is function could be implemented in user file 
-            when the callback is needed,
-  */
-#if 1
-  if(netif_is_link_up(&gnetif))
-  {
-    tcp_echoserver_init();
-  }
-  else
-  {
-    close_echoserver();
-    netif_remove(&gnetif);
-  } 
-#endif
-}
-#endif
+
 /* USER CODE END 2 */
 
 /**
@@ -99,7 +81,7 @@ void MX_LWIP_Init(void)
   IP_ADDRESS[0] = 192;
   IP_ADDRESS[1] = 168;
   IP_ADDRESS[2] = 0;
-  IP_ADDRESS[3] = 102;
+  IP_ADDRESS[3] = 122;
   NETMASK_ADDRESS[0] = 255;
   NETMASK_ADDRESS[1] = 255;
   NETMASK_ADDRESS[2] = 255;

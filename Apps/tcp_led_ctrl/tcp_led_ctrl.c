@@ -12,7 +12,7 @@ static void trigger_led();
 
 
 
-int32_t process_one_frame(uint8_t *frame_data, uint16_t frame_len)
+int32_t process_one_frame(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es, uint8_t *frame_data, uint16_t frame_len)
 {
 	RECV_FRAME_PTR_t frame_ptr = (RECV_FRAME_PTR_t)frame_data;
 	uint8_t *data = (uint8_t *)(&(frame_ptr->data_len));
@@ -45,13 +45,13 @@ int32_t process_one_frame(uint8_t *frame_data, uint16_t frame_len)
 		case RGB_DATA:
 		{
 			fill_led_buffer(&(frame_ptr->rgb_data), frame_ptr->channel, frame_ptr->led_start, frame_ptr->led_end);
-			send_ack( RGB_DATA_ACK,STATUS_OK);
+			send_ack(tpcb, es, RGB_DATA_ACK,STATUS_OK);
 			break;
 		}
 		case RGB_TRIGGER:
 		{
 			trigger_led();
-			send_ack( RGB_TRIGGER_ACK,STATUS_OK);
+			send_ack(tpcb, es, RGB_TRIGGER_ACK,STATUS_OK);
 			break;
 		}
 		case HEART_BEAT:
@@ -145,7 +145,8 @@ void test()
 	
 static void trigger_led()
 {
-	__set_PRIMASK(1);
+	//__set_PRIMASK(1);
+#if 1
 	ws2812_send(&led_buffer[0][0], 
 							   &led_buffer[1][0],
 							   &led_buffer[2][0],
@@ -154,10 +155,11 @@ static void trigger_led()
 							   &led_buffer[5][0],
 							   led_num_to_send * 3
 								);
-	__set_PRIMASK(0);
+#endif
+	//__set_PRIMASK(0);
 }
 
-void send_ack(uint8_t cmd, uint8_t status)
+void send_ack(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es, uint8_t cmd, uint8_t status)
 {
 
 	uint8_t data[7] = {FRAME_START,3,0,0,0,0,FRAME_END}; 
@@ -166,16 +168,16 @@ void send_ack(uint8_t cmd, uint8_t status)
 	data[5] = data[1] ^ data[2] ^ data[3] ^ data[4];
 	//es->state = ES_RECEIVED;
 //	es->pcb = tpcb;
-//	es->p_tx = pbuf_alloc(PBUF_TRANSPORT, 7 , PBUF_POOL);
-//	if(NULL != es->p_tx)
-//	{
-//		pbuf_take(es->p_tx, data, 7);
-//		tcp_echoclient_send(tpcb, es);
-//	}
-//	else
-//	{
-//		printf("pbuf_alloc return null\n");
-//	}
+	es->p = pbuf_alloc(PBUF_TRANSPORT, 7 , PBUF_POOL);
+	if(NULL != es->p)
+	{
+		pbuf_take(es->p, data, 7);
+		tcp_echoserver_send(tpcb, es);
+	}
+	else
+	{
+		printf("pbuf_alloc return null\n");
+	}
 
 }
 

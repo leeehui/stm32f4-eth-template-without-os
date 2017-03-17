@@ -151,7 +151,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 1, 0);
+    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(ETH_IRQn);
     HAL_NVIC_SetPriority(ETH_WKUP_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(ETH_WKUP_IRQn);
@@ -424,7 +424,7 @@ static struct pbuf * low_level_input(struct netif *netif)
   
 
   /* get received frame */
-  if (HAL_ETH_GetReceivedFrame(&heth) != HAL_OK)
+  if (HAL_ETH_GetReceivedFrame_IT(&heth) != HAL_OK)
     return NULL;
   
   /* Obtain the size of the packet and put it into the "len" variable. */
@@ -499,6 +499,7 @@ static struct pbuf * low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
+#if 0
 void ethernetif_input(struct netif *netif)
  
 {
@@ -523,7 +524,28 @@ void ethernetif_input(struct netif *netif)
  
   }
 }
+#endif
 
+void ethernetif_input(struct netif *netif)
+ 
+{
+  err_t err;
+ 
+  struct pbuf *p;
+
+      do
+      {   
+        p = low_level_input( netif );
+        if   (p != NULL)
+        {
+          if (netif->input( p, netif) != ERR_OK )
+          {
+            pbuf_free(p);
+          }
+        }
+      } while(p!=NULL);
+}
+      
 #if !LWIP_ARP
 /**
  * This function has to be completed by user in case of ARP OFF.

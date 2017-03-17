@@ -39,6 +39,7 @@
 #include "lwip/stats.h"
 #include "lwip/tcp.h"
 #include "debug_usart.h"
+#include "tcp_echoserver.h"
 
 #if LWIP_TCP
 
@@ -46,23 +47,7 @@ static struct tcp_pcb *tcp_echoserver_pcb;
 extern     ip4_addr_t ipaddr;
 
 
-/* ECHO protocol states */
-enum tcp_echoserver_states
-{
-  ES_NONE = 0,
-  ES_ACCEPTED,
-  ES_RECEIVED,
-  ES_CLOSING
-};
 
-/* structure for maintaing connection infos to be passed as argument 
-   to LwIP callbacks*/
-struct tcp_echoserver_struct
-{
-  u8_t state;             /* current connection state */
-  struct tcp_pcb *pcb;    /* pointer on the current tcp_pcb */
-  struct pbuf *p;         /* pointer on the received/to be transmitted pbuf */
-};
 
 
 static err_t tcp_echoserver_accept(void *arg, struct tcp_pcb *newpcb, err_t err);
@@ -70,7 +55,7 @@ static err_t tcp_echoserver_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
 static void tcp_echoserver_error(void *arg, err_t err);
 static err_t tcp_echoserver_poll(void *arg, struct tcp_pcb *tpcb);
 static err_t tcp_echoserver_sent(void *arg, struct tcp_pcb *tpcb, u16_t len);
-static void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es);
+ void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es);
 static void tcp_echoserver_connection_close(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es);
 
 
@@ -82,6 +67,7 @@ void close_echoserver(void)
     tcp_close(tcp_echoserver_pcb);  
   }
 }
+
 /**
   * @brief  Initializes the tcp echo server
   * @param  None
@@ -129,7 +115,6 @@ void tcp_echoserver_init(void)
     printf("Can not create new pcb\n");
   }
 }
-
 /**
   * @brief  This function is the implementation of tcp_accept LwIP callback
   * @param  arg: not used
@@ -164,6 +149,8 @@ static err_t tcp_echoserver_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     
     /* initialize lwip tcp_err callback function for newpcb  */
     tcp_err(newpcb, tcp_echoserver_error);
+    
+    tcp_sent(newpcb, tcp_echoserver_sent);
     
     /* initialize lwip tcp_poll callback function for newpcb */
     tcp_poll(newpcb, tcp_echoserver_poll, 1);
@@ -236,11 +223,13 @@ static err_t tcp_echoserver_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
     es->p = p;
     
     /* initialize LwIP tcp_sent callback function */
-    tcp_sent(tpcb, tcp_echoserver_sent);
-    
+    //tcp_sent(tpcb, tcp_echoserver_sent);
+    process_one_frame(tpcb, es, p->payload, p->len);
     /* send back the received data (echo) */
-    tcp_echoserver_send(tpcb, es);
+    //tcp_echoserver_send(tpcb, es);
+    tcp_recved(tpcb, p->tot_len);
     
+    pbuf_free(p);
     ret_err = ERR_OK;
   }
   else if (es->state == ES_RECEIVED)
@@ -250,8 +239,11 @@ static err_t tcp_echoserver_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
     {
       es->p = p;
   
+      process_one_frame(tpcb, es, p->payload, p->len);
+      tcp_recved(tpcb, p->tot_len);
+      pbuf_free(p);
       /* send back received data */
-      tcp_echoserver_send(tpcb, es);
+      //tcp_echoserver_send(tpcb, es);
     }
     else
     {
@@ -375,7 +367,7 @@ static err_t tcp_echoserver_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
   * @param  es: pointer on echo_state structure
   * @retval None
   */
-static void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es)
+void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es)
 {
   struct pbuf *ptr;
   err_t wr_err = ERR_OK;
@@ -393,6 +385,7 @@ static void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_stru
     
     if (wr_err == ERR_OK)
     {
+#if 1
       u16_t plen;
 
       plen = ptr->len;
@@ -405,22 +398,24 @@ static void tcp_echoserver_send(struct tcp_pcb *tpcb, struct tcp_echoserver_stru
         /* increment reference count for es->p */
         pbuf_ref(es->p);
       }
-      
+#endif      
       /* free pbuf: will free pbufs up to es->p (because es->p has a reference count > 0) */
       pbuf_free(ptr);
 
       /* Update tcp window size to be advertized : should be called when received
       data (with the amount plen) has been processed by the application layer */
-      tcp_recved(tpcb, plen);
+      //tcp_recved(tpcb, plen);
    }
    else if(wr_err == ERR_MEM)
    {
       /* we are low on memory, try later / harder, defer to poll */
      es->p = ptr;
+     debug(info, "send err: ERR_MEM");
    }
    else
    {
      /* other problem ?? */
+     debug(info, "send err: no message");
    }
   }
 }
@@ -451,4 +446,24 @@ static void tcp_echoserver_connection_close(struct tcp_pcb *tpcb, struct tcp_ech
   tcp_close(tpcb);
 }
 
+
+#if 1
+void ethernetif_notify_conn_changed(struct netif *netif)
+{
+  /* NOTE : This is function could be implemented in user file 
+            when the callback is needed,
+  */
+#if 1
+  if(netif_is_link_up(netif))
+  {
+    tcp_echoserver_init();
+  }
+  else
+  {
+    close_echoserver();
+    netif_remove(netif);
+  } 
+#endif
+}
+#endif
 #endif /* LWIP_TCP */
