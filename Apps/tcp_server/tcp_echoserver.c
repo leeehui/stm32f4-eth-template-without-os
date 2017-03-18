@@ -160,6 +160,7 @@ static err_t tcp_echoserver_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
   else
   {
     /*  close tcp connection */
+    debug(info, "closing connection......");
     tcp_echoserver_connection_close(newpcb, es);
     /* return memory error */
     ret_err = ERR_MEM;
@@ -193,6 +194,7 @@ static err_t tcp_echoserver_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
     if(es->p == NULL)
     {
        /* we're done sending, close connection */
+        debug(info, "closing connection......");
        tcp_echoserver_connection_close(tpcb, es);
     }
     else
@@ -317,6 +319,7 @@ static err_t tcp_echoserver_poll(void *arg, struct tcp_pcb *tpcb)
       if(es->state == ES_CLOSING)
       {
         /*  close tcp connection */
+        debug(info, "closing connection......");
         tcp_echoserver_connection_close(tpcb, es);
       }
     }
@@ -355,7 +358,10 @@ static err_t tcp_echoserver_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
   {
     /* if no more data to send and client closed connection*/
     if(es->state == ES_CLOSING)
+    {
+      debug(info, "closing connection......");
       tcp_echoserver_connection_close(tpcb, es);
+    }
   }
   return ERR_OK;
 }

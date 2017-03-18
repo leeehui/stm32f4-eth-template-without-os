@@ -69,7 +69,9 @@
 /*----- CHECKSUM_BY_HARDWARE disabled -----*/
 #define CHECKSUM_BY_HARDWARE 0
 /*-----------------------------------------------------------------------------*/
-
+#define LWIP_DEBUG 0
+#define TCP_DEBUG                       LWIP_DBG_OFF   
+   
 /* LwIP Stack Parameters (modified compared to initialization value in opt.h) -*/
 /* Parameters set in STM32CubeMX LwIP Configuration GUI -*/
 /*----- Value in opt.h for NO_SYS: 0 -----*/

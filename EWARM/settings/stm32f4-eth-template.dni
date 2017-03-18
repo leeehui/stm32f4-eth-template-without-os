@@ -12,7 +12,7 @@ ByteLimit=50
 stlinkserialNo=2BF753D9
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=-246524693
+Checksum=-567687697
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -82,7 +82,7 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_server\tcp_echoserver.c}.470.1" 0 0 1 "" 0 "" 0
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_server\tcp_echoserver.c}.476.1" 0 0 1 "" 0 "" 0
 Count=1
 [Aliases]
 Count=0

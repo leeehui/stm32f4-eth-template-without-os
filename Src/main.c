@@ -80,7 +80,7 @@ static void EXTILine0_Config(void)
   
   /* Configure PA0 pin as input floating */
   GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStructure.Pull = GPIO_PULLUP;
+  GPIO_InitStructure.Pull = GPIO_NOPULL;//GPIO_PULLDOWN;//GPIO_PULLDOWN
   GPIO_InitStructure.Pin = GPIO_PIN_0;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
 
@@ -98,11 +98,30 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     //netif_set_link_down(&gnetif);
     //printf("link down from interrupt\n");
   //delay_ms(2000);
-
+  uint32_t regvalue = 0;
   //ethernetif_set_link_polling(&gnetif);
-      netif_set_link_down(&gnetif);
-      is_need_polling = 1;
-      debug(info, "link down");
+  debug(info, "link down signal");
+  
+  /* Check whether the link interrupt has occurred or not */
+  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+
+  if((regvalue & PHY_ISFR_INT4) != (uint16_t)RESET)
+  {   
+    /* Read PHY_SR*/
+    HAL_ETH_ReadPHYRegister(&heth, PHY_BSR, &regvalue);
+    
+    /* Check whether the link is up or down*/
+    if((regvalue & PHY_LINKED_STATUS)!= (uint16_t)RESET)
+    {
+      debug(info, "link down not confirmed");
+    }
+    else
+    {
+       netif_set_link_down(&gnetif);
+       is_need_polling = 1;
+       debug(info, "link down confirmed");
+    }      
+  }
 }
 /* USER CODE END 0 */
 
@@ -267,7 +286,7 @@ static void MX_GPIO_Init(void)
                            PB4 PB5 */
   GPIO_InitStruct.Pin = GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_NOPULL; //GPIO_PULLDOWN
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
