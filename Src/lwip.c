@@ -67,6 +67,7 @@ ip4_addr_t gw;
 uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
+uint16_t port;
 
 /* USER CODE BEGIN 2 */
 
@@ -82,6 +83,7 @@ void MX_LWIP_Init(void)
   IP_ADDRESS[1] = 168;
   IP_ADDRESS[2] = 0;
   IP_ADDRESS[3] = 122;
+  port = 2000;
   NETMASK_ADDRESS[0] = 255;
   NETMASK_ADDRESS[1] = 255;
   NETMASK_ADDRESS[2] = 255;
@@ -100,8 +102,21 @@ void MX_LWIP_Init(void)
   IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
 
   /* add the network interface (IPv4/IPv6) without RTOS */
-  uint32_t ip_addr = get_ip_addr();
-  ipaddr = *(ip4_addr_t *)(&ip_addr);
+  if(IP_FLASH_VALID == get_ip_flag())
+  {
+      uint32_t ip_addr = get_ip_addr();
+      ipaddr = *(ip4_addr_t *)(&ip_addr);
+      port = get_ip_port();
+      char ip_str_buffer[20];
+      ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
+      debug(info, "use address from flash: %s : %d", ip_str_buffer, port );
+  }
+  else
+  {
+      char ip_str_buffer[20];
+      ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
+      debug(info, "use address default: %s : %d", ip_str_buffer, port );
+  }
   netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
 
   /* Registers the default network interface */

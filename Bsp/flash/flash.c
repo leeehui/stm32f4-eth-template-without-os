@@ -58,70 +58,87 @@ bool set_ip(ip4_addr_t ipaddr, uint16_t port)
         EraseInitStruct.NbSectors = 1;
         
         HAL_FLASH_Unlock();
-        
-        if(HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK)
-        { 
-          /* 
-            Error occurred while sector erase. 
-            User can add here some code to deal with this error. 
-            SectorError will contain the faulty sector and then to know the code error on this sector,
-            user can call function 'HAL_FLASH_GetError()'
-          */
-          /*
-            FLASH_ErrorTypeDef errorcode = HAL_FLASH_GetError();
-          */
-          debug(info, "flash erase error.");
-          return false;
-        }
+              
+        debug(info, "ipaddr in flash : 0x%x. ipaddr to set : 0x%x.", get_ip_addr(), ip_addr);
+        debug(info, "port in flash : 0x%x. port to set : 0x%x.", get_ip_port(), port);
+
  
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, IP_ADDR_FLASH_ADDR, (uint64_t)ip_addr);
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, IP_PORT_FLASH_ADDR, (uint64_t)port);
+        if((get_ip_addr() != ip_addr) || (get_ip_port() != port))
+        {
+            if(HAL_FLASHEx_Erase(&EraseInitStruct, &SectorError) != HAL_OK)
+            { 
+              /* 
+                Error occurred while sector erase. 
+                User can add here some code to deal with this error. 
+                SectorError will contain the faulty sector and then to know the code error on this sector,
+                user can call function 'HAL_FLASH_GetError()'
+              */
+              /*
+                FLASH_ErrorTypeDef errorcode = HAL_FLASH_GetError();
+              */
+              debug(info, "flash erase error.");
+              HAL_FLASH_Lock();
+              return false;
+            }
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, IP_ADDR_FLASH_ADDR, (uint64_t)ip_addr);
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, IP_PORT_FLASH_ADDR, (uint64_t)port);
+        }
+        else
+        {
+            HAL_FLASH_Lock();
+            debug(info, "the same ip has been saved to flash! do nothing!");
+            return true;
+        }
 
-	  /* Note: If an erase operation in Flash memory also concerns data in the data or instruction cache,
-     you have to make sure that these data are rewritten before they are accessed during code
-     execution. If this cannot be done safely, it is recommended to flush the caches by setting the
-     DCRST and ICRST bits in the FLASH_CR register. */
-      __HAL_FLASH_DATA_CACHE_DISABLE();
-      __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
+              /* Note: If an erase operation in Flash memory also concerns data in the data or instruction cache,
+         you have to make sure that these data are rewritten before they are accessed during code
+         execution. If this cannot be done safely, it is recommended to flush the caches by setting the
+         DCRST and ICRST bits in the FLASH_CR register. */
+        __HAL_FLASH_DATA_CACHE_DISABLE();
+        __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
 
-      __HAL_FLASH_DATA_CACHE_RESET();
-      __HAL_FLASH_INSTRUCTION_CACHE_RESET();
+        __HAL_FLASH_DATA_CACHE_RESET();
+        __HAL_FLASH_INSTRUCTION_CACHE_RESET();
 
-      __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
-      __HAL_FLASH_DATA_CACHE_ENABLE();
+        __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
+        __HAL_FLASH_DATA_CACHE_ENABLE();
 
 	if ( get_ip_addr() != ip_addr )
 	{
 		debug(info, "set ip addr failed!");
+                HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, IP_FLAG_FLASH_ADDR, IP_FLASH_INVALID);
+                HAL_FLASH_Lock();
 		return false;
 	}
         if ( get_ip_port() != port )
         {
 		debug(info, "set ip port failed!");
+                HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, IP_FLAG_FLASH_ADDR, IP_FLASH_INVALID);
+                HAL_FLASH_Lock();
 		return false;
 	}
         
         HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, IP_FLAG_FLASH_ADDR, IP_FLASH_VALID);
-          /* Note: If an erase operation in Flash memory also concerns data in the data or instruction cache,
-     you have to make sure that these data are rewritten before they are accessed during code
-     execution. If this cannot be done safely, it is recommended to flush the caches by setting the
-     DCRST and ICRST bits in the FLASH_CR register. */
-    __HAL_FLASH_DATA_CACHE_DISABLE();
-    __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
+              /* Note: If an erase operation in Flash memory also concerns data in the data or instruction cache,
+         you have to make sure that these data are rewritten before they are accessed during code
+         execution. If this cannot be done safely, it is recommended to flush the caches by setting the
+         DCRST and ICRST bits in the FLASH_CR register. */
+        __HAL_FLASH_DATA_CACHE_DISABLE();
+        __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
 
-    __HAL_FLASH_DATA_CACHE_RESET();
-    __HAL_FLASH_INSTRUCTION_CACHE_RESET();
+        __HAL_FLASH_DATA_CACHE_RESET();
+        __HAL_FLASH_INSTRUCTION_CACHE_RESET();
 
-    __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
-    __HAL_FLASH_DATA_CACHE_ENABLE();
+        __HAL_FLASH_INSTRUCTION_CACHE_ENABLE();
+        __HAL_FLASH_DATA_CACHE_ENABLE();
 
-     
+        HAL_FLASH_Lock();
+        
         debug(info, "set ip port success!");
         char ip_str_buffer[20];
         ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
         debug(info, "numeric ip str after set : %s : %d", ip_str_buffer, port );
-
-        debug(info, "please restart device!");
+        debug(info, "please restart me!");       
 	return true;
 }
 

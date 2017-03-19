@@ -45,7 +45,7 @@
 
 static struct tcp_pcb *tcp_echoserver_pcb;
 extern     ip4_addr_t ipaddr;
-
+extern uint16_t port;
 
 
 
@@ -93,10 +93,7 @@ void tcp_echoserver_init(void)
     err_t err;
 
     /* bind echo_pcb to port 7 (ECHO protocol) */
-    uint16_t port = get_ip_port();
-    char ip_str_buffer[20];
-    ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
-    debug(info, "binding local address: %s : %d", ip_str_buffer, port );
+
     err = tcp_bind(tcp_echoserver_pcb, IP_ADDR_ANY, port);
     
     if (err == ERR_OK)

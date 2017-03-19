@@ -9,7 +9,7 @@ static uint16_t led_num_to_send = 0;
 
 static void fill_led_buffer(uint8_t *data_start);
 static void trigger_led();
-static void config_ip(uint8_t *data_start);
+static bool config_ip(uint8_t *data_start);
 
 
 
@@ -61,8 +61,14 @@ int32_t process_one_frame(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es
         }
         case CONFIG_IP:
         {                       
-            config_ip(&(frame_ptr->data));
-            send_ack(tpcb, es, CONFIG_IP_ACK,STATUS_OK);
+            if(config_ip(&(frame_ptr->data)))
+            {
+                send_ack(tpcb, es, CONFIG_IP_ACK,STATUS_OK);
+            }
+            else
+            {
+                send_ack(tpcb, es, CONFIG_IP_ACK,STATUS_ERR);
+            }
             break;
         }
         default:break;
@@ -102,12 +108,12 @@ static void fill_led_buffer(uint8_t *data_start)
     memcpy(&led_buffer[channel][buffer_addr_start], &rgb_data_ptr->rgb_data, len);	
 }
 
-static void config_ip(uint8_t *data_start)
+static bool config_ip(uint8_t *data_start)
 {
     IP_DATA_PTR_t ip_data_ptr = (IP_DATA_PTR_t)data_start;
     ip4_addr_t ipaddr;
     IP4_ADDR(&ipaddr, ip_data_ptr->ip_addr[0], ip_data_ptr->ip_addr[1], ip_data_ptr->ip_addr[2], ip_data_ptr->ip_addr[3]);
-    set_ip(ipaddr, ip_data_ptr->ip_port);
+    return set_ip(ipaddr, ip_data_ptr->ip_port);
 }
 
 
