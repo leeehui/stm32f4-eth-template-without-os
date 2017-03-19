@@ -130,6 +130,9 @@
         <name>$PROJ_DIR$\..\Bsp\debug_usart\debug_usart.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Bsp\flash\flash.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Bsp\ws2812\light_ws2812_cortex.s</name>
       </file>
     </group>

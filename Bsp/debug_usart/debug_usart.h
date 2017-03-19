@@ -1,9 +1,7 @@
 #ifndef __DEBUG_USART_H
 #define	__DEBUG_USART_H
 
-#include "stm32f4xx.h"
-#include <stdio.h>
-
+#include "stm32_includes.h"
 
 extern UART_HandleTypeDef huart1;
 

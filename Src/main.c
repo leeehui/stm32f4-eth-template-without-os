@@ -148,6 +148,7 @@ int main(void)
   debug(info, "start.");
   //HAL_NVIC_DisableIRQ(SysTick_IRQn);
   /* USER CODE BEGIN 2 */
+  
   tcp_echoserver_init();
   /* USER CODE END 2 */
 

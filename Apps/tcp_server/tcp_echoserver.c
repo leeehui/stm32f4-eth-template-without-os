@@ -93,7 +93,11 @@ void tcp_echoserver_init(void)
     err_t err;
 
     /* bind echo_pcb to port 7 (ECHO protocol) */
-    err = tcp_bind(tcp_echoserver_pcb, IP_ADDR_ANY, 8000);
+    uint16_t port = get_ip_port();
+    char ip_str_buffer[20];
+    ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
+    debug(info, "binding local address: %s : %d", ip_str_buffer, port );
+    err = tcp_bind(tcp_echoserver_pcb, IP_ADDR_ANY, port);
     
     if (err == ERR_OK)
     {
@@ -194,8 +198,8 @@ static err_t tcp_echoserver_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
     if(es->p == NULL)
     {
        /* we're done sending, close connection */
-        debug(info, "closing connection......");
-       tcp_echoserver_connection_close(tpcb, es);
+       debug(info, "receive an empty tcp frame from client......");
+       //tcp_echoserver_connection_close(tpcb, es);
     }
     else
     {

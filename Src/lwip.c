@@ -100,6 +100,8 @@ void MX_LWIP_Init(void)
   IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
 
   /* add the network interface (IPv4/IPv6) without RTOS */
+  uint32_t ip_addr = get_ip_addr();
+  ipaddr = *(ip4_addr_t *)(&ip_addr);
   netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
 
   /* Registers the default network interface */

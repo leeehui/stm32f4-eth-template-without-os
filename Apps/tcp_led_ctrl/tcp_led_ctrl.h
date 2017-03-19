@@ -41,22 +41,35 @@ enum
 {
 	RGB_DATA = 0xD1,
 	RGB_TRIGGER = 0xD2,
+        CONFIG_IP = 0xD3,
 	RGB_DATA_ACK = 0xC1,
 	RGB_TRIGGER_ACK = 0xC2,
-	HEART_BEAT = 0xC3
+	HEART_BEAT = 0xCF,
+        CONFIG_IP_ACK = 0xC3
 };
+
 
 typedef  __packed struct  RECV_FRAME 
 {
 	uint8_t start;
 	uint16_t data_len;
 	uint8_t cmd;
-	uint8_t channel;
-	uint16_t led_start;
-	uint16_t led_end;
-	uint8_t rgb_data;	
+	uint8_t data;	
 }  RECV_FRAME_t, *RECV_FRAME_PTR_t;
 
+typedef __packed struct RGB_DATA
+{
+    uint8_t channel;
+    uint16_t led_start;
+    uint16_t led_end;
+    uint8_t rgb_data;
+}RGB_DATA_t, *RGB_DATA_PTR_t;
+
+typedef __packed struct IP_DATA
+{
+    uint8_t ip_addr[4];
+    uint16_t ip_port;
+}IP_DATA_t, *IP_DATA_PTR_t;
 
 int32_t process_one_frame(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es, uint8_t *frame_data, uint16_t frame_len);
 void send_ack(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es, uint8_t cmd, uint8_t status);
