@@ -142,6 +142,10 @@ static err_t tcp_echoserver_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     es->pcb = newpcb;
     es->p = NULL;
     debug(info, "new connection......");
+    char ip_str_buffer[20];
+    ip4addr_ntoa_r(&(newpcb->remote_ip), ip_str_buffer, 20);
+    debug(info, "remote ip: %s, port: %d", ip_str_buffer, newpcb->remote_port );
+
     /* pass newly allocated es structure as argument to newpcb */
     tcp_arg(newpcb, es);
     
