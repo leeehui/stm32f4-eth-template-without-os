@@ -328,6 +328,7 @@
           <state>$PROJ_DIR$\..\Apps\tcp_server</state>
           <state>$PROJ_DIR$\..\Bsp\flash</state>
           <state>$PROJ_DIR$\..\Bsp\ws2812</state>
+          <state>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS-Plus-CLI</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -993,6 +994,9 @@
         <name>$PROJ_DIR$\..\Apps\tcp_server\netconf.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Apps\freertos_cli\Sample-CLI-commands.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Src\stm32f4xx_hal_msp.c</name>
       </file>
       <file>
@@ -1076,10 +1080,28 @@
       <file>
         <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usart.c</name>
+      </file>
     </group>
   </group>
   <group>
     <name>Middlewares</name>
+    <group>
+      <name>CLI</name>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS-Plus-CLI\FreeRTOS_CLI.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS-Plus-CLI\serial.c</name>
+        <excluded>
+          <configuration>stm32f4-eth-template</configuration>
+        </excluded>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS-Plus-CLI\UARTCommandConsole.c</name>
+      </file>
+    </group>
     <group>
       <name>LwIP</name>
       <file>

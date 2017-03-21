@@ -15,7 +15,8 @@
 #include "lwip/stats.h"
 #include "lwip/tcp.h"
 
-
+/* FreeRTOS+CLI includes. */
+#include "FreeRTOS_CLI.h"
 
 #include "flash.h"
 #include "debug_usart.h"

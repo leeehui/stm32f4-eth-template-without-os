@@ -679,7 +679,7 @@ void ethernetif_set_link(struct netif *netif)
   //lenli end
 }
 
-uint32_t is_need_polling = 0;
+__IO uint32_t is_need_polling = 0;
 
 void ethernetif_set_link_polling(struct netif *netif)
  

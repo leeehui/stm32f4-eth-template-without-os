@@ -149,7 +149,6 @@ void set_ip_test(void)
   uint16_t port = 2000;
   uint32_t ip_addr;
 
-  
   IP4_ADDR(&ipaddr, 192, 168, 0, 100);
   
   ip_addr = *((uint32_t*)(&ipaddr));
@@ -161,7 +160,5 @@ void set_ip_test(void)
   port = get_ip_port();
   debug(info, "numeric ip after set : %d : %d", ip_addr, port);
   
-
-    
 }
 

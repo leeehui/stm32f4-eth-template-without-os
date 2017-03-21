@@ -90,7 +90,7 @@ static void EXTILine0_Config(void)
 }
 
 extern struct netif gnetif;
-extern uint32_t is_need_polling;
+extern __IO uint32_t is_need_polling;
 
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -123,6 +123,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }      
   }
 }
+
 /* USER CODE END 0 */
 
 int main(void)
