@@ -141,7 +141,7 @@ static err_t tcp_echoserver_accept(void *arg, struct tcp_pcb *newpcb, err_t err)
     es->state = ES_ACCEPTED;
     es->pcb = newpcb;
     es->p = NULL;
-    
+    debug(info, "new connection......");
     /* pass newly allocated es structure as argument to newpcb */
     tcp_arg(newpcb, es);
     

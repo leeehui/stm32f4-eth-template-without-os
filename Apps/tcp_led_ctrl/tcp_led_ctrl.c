@@ -21,12 +21,14 @@ int32_t process_one_frame(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es
     uint32_t xor_counter = frame_ptr->data_len;//xor = XOR(len(2) + RGB data), frame_ptr->data_len = (RGB data + xorValue(1))
     if(frame_ptr->start != FRAME_START)
     {
+        debug(info, "frame_ptr->start wrong!");
         return 1;
     }
     
     //frame_len = frame_ptr->len + start(1) + end(1) + datalen(2)
     if(frame_ptr->data_len != frame_len - 4) 
     {
+        debug(info, "frame_ptr->data_len wrong!");
         return 2;
     }
     
@@ -38,7 +40,7 @@ int32_t process_one_frame(struct tcp_pcb *tpcb, struct tcp_echoserver_struct *es
     
     if(xor_value != *data)
     {
-        printf("xor error\n");
+        debug(info, "xor error");
     }
     
     switch(frame_ptr->cmd)
@@ -88,15 +90,18 @@ static void fill_led_buffer(uint8_t *data_start)
     if(channel > CH_NUM)
     {
         //error channel num
+        debug(info, "channel wrong!");
         return;
     }
     if(led_end > CH_LED_NUM - 1)
     {
+        debug(info, "led_end too large!");
         return;
     }
     if(led_end < led_start)
     {
         //error channel num
+        debug(info, "led_end is less than led_start!");
         return;
     }
     
@@ -174,7 +179,7 @@ static void trigger_led()
                &led_buffer[3][0],
                &led_buffer[4][0],
                &led_buffer[5][0],
-               led_num_to_send * 3
+               (led_num_to_send+1) * 3
                     );
     __set_PRIMASK(0);
     

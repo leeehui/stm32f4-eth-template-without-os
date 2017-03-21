@@ -12,7 +12,7 @@ ByteLimit=50
 stlinkserialNo=2BF753D9
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=1473745251
+Checksum=-1113819676
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -70,12 +70,14 @@ SumSortOrder=0
 mode=0
 [Breakpoints2]
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_server\tcp_echoserver.c}.475.1" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Bsp\flash\flash.c}.58.9" 0 0 1 "" 0 "" 0
-Count=2
+Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 Count=0
 SuppressDialog=0
@@ -87,6 +89,3 @@ Mode=3
 Graph=0
 Symbiont=0
 Exclusions=
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
