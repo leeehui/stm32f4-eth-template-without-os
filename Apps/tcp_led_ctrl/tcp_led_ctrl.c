@@ -168,6 +168,39 @@ void test()
         delay_ms(1);
     }
 }
+
+void test_rect()
+{
+    for(int i = 0; i < 255; i++)
+    {
+        //update_all_data(0,i,0);
+
+        led_buffer[0][0] = 0;
+        led_buffer[0][1] = 255;
+        led_buffer[0][2] = 0;
+        ws2812_send(&led_buffer[0][0], 
+                   &led_buffer[1][0],
+                   &led_buffer[2][0],
+                   &led_buffer[3][0],
+                   &led_buffer[4][0],
+                   &led_buffer[5][0],
+                   CH_LED_NUM*3
+                        );
+        delay_ms(1000);
+        led_buffer[0][0] = 255;
+        led_buffer[0][1] = 0;
+        led_buffer[0][2] = 0;
+        ws2812_send(&led_buffer[0][0], 
+                   &led_buffer[1][0],
+                   &led_buffer[2][0],
+                   &led_buffer[3][0],
+                   &led_buffer[4][0],
+                   &led_buffer[5][0],
+                   CH_LED_NUM*3
+                        );
+        delay_ms(1000);
+    }
+}
 	
 extern  __IO uint32_t uwTick;
 static void trigger_led()
