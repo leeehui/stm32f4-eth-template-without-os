@@ -148,7 +148,7 @@ void ws2812_send(uint8_t *data, uint8_t *data1,uint8_t *data2,uint8_t *data3,uin
 //#if (ws2812_cpuclk>60000000)
 //	#error "Maximum clockspeed for ARM ws2812 library is 60 Mhz!"
 //#endif
-
+#if 0
 #define port_set_b    0x40020418        
 #define port_clr_b    0x4002041A  
 
@@ -171,6 +171,30 @@ void ws2812_send(uint8_t *data, uint8_t *data1,uint8_t *data2,uint8_t *data3,uin
 #define pin_mask_ch_4      0x08
 #define pin_mask_ch_5      0x10
 #define pin_mask_ch_6      0x20
+#endif
+
+#define port_set_d    0x40020C18        
+#define port_clr_d    0x40020C1A  
+
+#define port_set_ch_1      port_set_d
+#define port_clr_ch_1      port_clr_d
+#define port_set_ch_2      port_set_d
+#define port_clr_ch_2      port_clr_d
+#define port_set_ch_3      port_set_d
+#define port_clr_ch_3      port_clr_d
+#define port_set_ch_4      port_set_d
+#define port_clr_ch_4      port_clr_d
+#define port_set_ch_5      port_set_d
+#define port_clr_ch_5      port_clr_d
+#define port_set_ch_6      port_set_d
+#define port_clr_ch_6      port_clr_d
+
+#define pin_mask_ch_1      0x0100
+#define pin_mask_ch_2      0x0200
+#define pin_mask_ch_3      0x0400
+#define pin_mask_ch_4      0x0800
+#define pin_mask_ch_5      0x1000
+#define pin_mask_ch_6      0x2000
 ///////////////////////////////////////////////////////////////////////
 // Main function call
 //
