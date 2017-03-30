@@ -109,6 +109,9 @@
         <name>$PROJ_DIR$\..\Apps\tcp_server\netconf.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Apps\queue\queue.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Apps\freertos_cli\Sample-CLI-commands.c</name>
       </file>
       <file>

@@ -45,7 +45,7 @@
 
 #ifndef COMMAND_INTERPRETER_H
 #define COMMAND_INTERPRETER_H
-
+#include "stm32_includes.h"
 
 //lenli
 #define pdFALSE			( ( BaseType_t ) 0 )
@@ -55,6 +55,15 @@
 #define pdFAIL			( pdFALSE )
 typedef long BaseType_t;
 typedef unsigned long UBaseType_t;
+
+
+typedef struct COMMAND_DATA_TAG
+{
+    uint8_t *data;
+    uint32_t len;
+    bool isProcessed;
+} cmd_data_t;
+
 
 //lenli
 

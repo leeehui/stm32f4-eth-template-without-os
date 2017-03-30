@@ -329,6 +329,7 @@
           <state>$PROJ_DIR$\..\Bsp\flash</state>
           <state>$PROJ_DIR$\..\Bsp\ws2812</state>
           <state>$PROJ_DIR$\..\Middlewares\Third_Party\FreeRTOS-Plus-CLI</state>
+          <state>$PROJ_DIR$\..\Apps\queue</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -992,6 +993,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Apps\tcp_server\netconf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Apps\queue\queue.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Apps\freertos_cli\Sample-CLI-commands.c</name>
