@@ -216,11 +216,117 @@ static const CLI_Command_Definition_t xLed =
 	};
 #endif /* configINCLUDE_TRACE_RELATED_CLI_COMMANDS */
 
+    
+static BaseType_t prvConfigIPCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
+static const CLI_Command_Definition_t xConfigIP =
+{
+    "config-ip",
+    "\r\nconfig-ip <ip1> <ip2> <ip3> <ip4> <port>:\r\n config ip address and port.\r\n",
+    prvConfigIPCommand, /* The function to run. */
+    5 /* The user can enter any number of commands. */
+};
+ 
+#define ConfigIPParamMaxLen 10
+static BaseType_t prvConfigIPCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString )
+{
+const char *pcParameter;
+BaseType_t xParameterStringLength, xReturn;
+static UBaseType_t uxParameterNumber = 0;
+uint8_t tempBuffer[ConfigIPParamMaxLen];
+uint8_t numBuffer[ConfigIPParamMaxLen];
+static uint32_t ip[4];
+static uint32_t port;
+	/* Remove compile time warnings about unused parameters, and check the
+	write buffer is not NULL.  NOTE - for simplicity, this example assumes the
+	write buffer length is adequate, so does not check for buffer overflows. */
+	( void ) pcCommandString;
+	( void ) xWriteBufferLen;
+	//configASSERT( pcWriteBuffer );
+
+	if( uxParameterNumber == 0 )
+	{
+		/* The first time the function is called after the command has been
+		entered just a header string is returned. */
+		//sprintf( pcWriteBuffer, "The three parameters were:\r\n" );
+        debug(info, "The 5 parameters were:" );
+
+		/* Next time the function is called the first parameter will be echoed
+		back. */
+		uxParameterNumber = 1U;
+
+		/* There is more data to be returned as no parameters have been echoed
+		back yet. */
+		xReturn = pdPASS;
+	}
+	else
+	{
+		/* Obtain the parameter string. */
+		pcParameter = FreeRTOS_CLIGetParameter
+						(
+							pcCommandString,		/* The command string itself. */
+							uxParameterNumber,		/* Return the next parameter. */
+							&xParameterStringLength	/* Store the parameter string length. */
+						);
+
+		/* Sanity check something was returned. */
+		//configASSERT( pcParameter );
+        
+		/* Return the parameter string. */
+		//memset( pcWriteBuffer, 0x00, xWriteBufferLen );
+		sprintf( tempBuffer, "%d: ", ( int ) uxParameterNumber );
+        if(xParameterStringLength > ConfigIPParamMaxLen)
+        {
+            xParameterStringLength = ConfigIPParamMaxLen;
+        }
+		strncat( tempBuffer, pcParameter, ( size_t ) xParameterStringLength );
+		//strncat( pcWriteBuffer, "\r\n", strlen( "\r\n" ) );
+        debug(info, "%s.", tempBuffer);
+        
+        sprintf( numBuffer, "%s", ( int ) pcParameter);
+        
+        //debug(info, "%d", atoi(numBuffer));   
+        if(uxParameterNumber < 5)
+        {
+            ip[uxParameterNumber-1] = atoi(numBuffer);
+            debug(info, "%d",ip[uxParameterNumber-1]);
+        }
+        else if(uxParameterNumber == 5)
+        {
+            port = atoi(numBuffer);
+            debug(info, "%d",port);
+        }
+        memset(tempBuffer, 0, ConfigIPParamMaxLen);
+
+		/* If this is the last of the three parameters then there are no more
+		strings to return after this one. */
+		if( uxParameterNumber == 5U )
+		{
+            ip4_addr_t ipaddr;
+            IP4_ADDR(&ipaddr, ip[0], ip[1], ip[2], ip[3]);
+            set_ip(ipaddr, port);
+			/* If this is the last of the three parameters then there are no more
+			strings to return after this one. */
+			xReturn = pdFALSE;
+			uxParameterNumber = 0;
+		}
+		else
+		{
+			/* There are more parameters to return after this one. */
+			xReturn = pdTRUE;
+			uxParameterNumber++;
+		}
+	}
+
+	return xReturn;
+}
+
+   
 /*-----------------------------------------------------------*/
 
 void vRegisterSampleCLICommands( void )
 {
 	/* Register all the command line commands defined immediately above. */
+#if 0
 	FreeRTOS_CLIRegisterCommand( &xTaskStats );	
 	FreeRTOS_CLIRegisterCommand( &xThreeParameterEcho );
 	FreeRTOS_CLIRegisterCommand( &xParameterEcho );
@@ -242,6 +348,8 @@ void vRegisterSampleCLICommands( void )
 		FreeRTOS_CLIRegisterCommand( &xStartStopTrace );
 	}
 	#endif
+#endif
+    FreeRTOS_CLIRegisterCommand( &xConfigIP );
 }
 /*-----------------------------------------------------------*/
 

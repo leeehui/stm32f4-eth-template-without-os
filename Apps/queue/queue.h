@@ -4,11 +4,11 @@
 
 #include "stm32_includes.h"
 
-#define QUEUE_TYPE   cmd_data_t
+#define QUEUE_TYPE   uint8_t
 
-void insert(QUEUE_TYPE value);
-void delete(void);
-QUEUE_TYPE first(void);
+int queue_put(QUEUE_TYPE value);
+int queue_get(QUEUE_TYPE *value);
+
 int is_empty(void);
 int is_full(void);
 

@@ -111,7 +111,7 @@ void MX_LWIP_Init(void)
       ip4addr_ntoa_r(&ipaddr, ip_str_buffer, 20);
       debug(info, "use address from flash: %s : %d", ip_str_buffer, port );
       uint32_t gw_tmp = ip_addr & (0x1FFFFFF);
-      gw = *(ip4_addr_t *)(&ip_addr);
+      gw = *(ip4_addr_t *)(&gw_tmp);
       ip4addr_ntoa_r(&gw, ip_str_buffer, 20);
       debug(info, "gateway: %s", ip_str_buffer);
   }

@@ -105,13 +105,13 @@ available. */
 /*
  * The task that implements the command console processing.
  */
-static void prvUARTCommandConsoleTask( void *pvParameters );
+void prvUARTCommandConsoleTask( void );
 void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
 
 /*-----------------------------------------------------------*/
 
 /* Const messages output by the command console. */
-static const char * const pcWelcomeMessage = "FreeRTOS command server.\r\nType Help to view a list of registered commands.\r\n\r\n>";
+static const char * const pcWelcomeMessage = "FreeRTOS command server.\r\nType Help to view a list of registered commands.";
 static const char * const pcEndOfOutputMessage = "\r\n[Press ENTER to execute the previous command again]\r\n>";
 static const char * const pcNewLine = "\r\n";
 
@@ -140,16 +140,15 @@ void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority )
 }
 /*-----------------------------------------------------------*/
 
-static void prvUARTCommandConsoleTask( void *pvParameters )
+void prvUARTCommandConsoleTask( void )
 {
-signed char cRxedChar;
-uint8_t ucInputIndex = 0;
-char *pcOutputString;
-static char cInputString[ cmdMAX_INPUT_SIZE ], cLastInputString[ cmdMAX_INPUT_SIZE ];
-BaseType_t xReturned;
-xComPortHandle xPort;
+    signed char cRxedChar;
+    uint8_t ucInputIndex = 0;
+    char *pcOutputString;
+    static char cInputString[ cmdMAX_INPUT_SIZE ], cLastInputString[ cmdMAX_INPUT_SIZE ];
+    BaseType_t xReturned;
+    xComPortHandle xPort;
 
-	( void ) pvParameters;
 
 	/* Obtain the address of the output buffer.  Note there is no mutual
 	exclusion on this buffer as it is assumed only one command console interface
@@ -160,7 +159,7 @@ xComPortHandle xPort;
 	//xPort = xSerialPortInitMinimal( configCLI_BAUD_RATE, cmdQUEUE_LENGTH );
 
 	/* Send the welcome message. */
-	vSerialPutString( xPort, ( signed char * ) pcWelcomeMessage, ( unsigned short ) strlen( pcWelcomeMessage ) );
+	//vSerialPutString( xPort, ( signed char * ) pcWelcomeMessage, ( unsigned short ) strlen( pcWelcomeMessage ) );
 
 	for( ;; )
 	{
@@ -168,20 +167,26 @@ xComPortHandle xPort;
 		INCLUDE_vTaskSuspend is not set to 1 - in which case portMAX_DELAY will
 		be a genuine block time rather than an infinite block time. */
 		//while( xSerialGetChar( xPort, &cRxedChar, portMAX_DELAY ) != pdPASS );
-
+            
+        HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_RESET);
+        LwIP_Periodic_Handle(sys_now());
+        HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_SET);
+    
+            
+        if(0==queue_get(&cRxedChar))
 		/* Ensure exclusive access to the UART Tx. */
 		//if( xSemaphoreTake( xTxMutex, cmdMAX_MUTEX_WAIT ) == pdPASS )
 		{
 			/* Echo the character back. */
+            //LL_USART_TransmitData8(USART1, cRxedChar);
 			//xSerialPutChar( xPort, cRxedChar, portMAX_DELAY );
 
 			/* Was it the end of the line? */
 			//if( cRxedChar == '\n' || cRxedChar == '\r' )//在windows下的回车会触发两次
-                        if(  cRxedChar == '\n' )
-                        
+            if(  cRxedChar == '\n' )                       
 			{
 				/* Just to space the output from the input. */
-				vSerialPutString( xPort, ( signed char * ) pcNewLine, ( unsigned short ) strlen( pcNewLine ) );
+				//vSerialPutString( xPort, ( signed char * ) pcNewLine, ( unsigned short ) strlen( pcNewLine ) );
 
 				/* See if the command is empty, indicating that the last command
 				is to be executed again. */
@@ -201,7 +206,7 @@ xComPortHandle xPort;
 					xReturned = FreeRTOS_CLIProcessCommand( cInputString, pcOutputString, configCOMMAND_INT_MAX_OUTPUT_SIZE );
 
 					/* Write the generated string to the UART. */
-					vSerialPutString( xPort, ( signed char * ) pcOutputString, ( unsigned short ) strlen( pcOutputString ) );
+					//vSerialPutString( xPort, ( signed char * ) pcOutputString, ( unsigned short ) strlen( pcOutputString ) );
 
 				} while( xReturned != pdFALSE );
 
@@ -213,7 +218,7 @@ xComPortHandle xPort;
 				ucInputIndex = 0;
 				memset( cInputString, 0x00, cmdMAX_INPUT_SIZE );
 
-				vSerialPutString( xPort, ( signed char * ) pcEndOfOutputMessage, ( unsigned short ) strlen( pcEndOfOutputMessage ) );
+				//vSerialPutString( xPort, ( signed char * ) pcEndOfOutputMessage, ( unsigned short ) strlen( pcEndOfOutputMessage ) );
 			}
 			else
 			{

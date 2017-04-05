@@ -103,8 +103,7 @@ static void fill_led_buffer(uint8_t *data_start)
         //error channel num
         debug(info, "led_end is less than led_start!");
         return;
-    }
-    
+    }    
     if(led_num_to_send < led_end)
     {
         led_num_to_send = led_end;
@@ -120,7 +119,6 @@ static bool config_ip(uint8_t *data_start)
     IP4_ADDR(&ipaddr, ip_data_ptr->ip_addr[0], ip_data_ptr->ip_addr[1], ip_data_ptr->ip_addr[2], ip_data_ptr->ip_addr[3]);
     return set_ip(ipaddr, ip_data_ptr->ip_port);
 }
-
 
 //just for function test
 static void update_channel_data(uint8_t channel, uint8_t red, uint8_t green, uint8_t blue)

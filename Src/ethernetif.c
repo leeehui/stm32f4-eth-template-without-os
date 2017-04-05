@@ -527,23 +527,20 @@ void ethernetif_input(struct netif *netif)
 #endif
 
 void ethernetif_input(struct netif *netif)
- 
 {
-  err_t err;
- 
-  struct pbuf *p;
-
-      do
-      {   
+    err_t err;
+    struct pbuf *p;
+    do
+    {   
         p = low_level_input( netif );
-        if   (p != NULL)
+        if(p != NULL)
         {
-          if (netif->input( p, netif) != ERR_OK )
-          {
-            pbuf_free(p);
-          }
+            if (netif->input( p, netif) != ERR_OK )
+            {
+                pbuf_free(p);
+            }
         }
-      } while(p!=NULL);
+    } while(p!=NULL);
 }
       
 #if !LWIP_ARP

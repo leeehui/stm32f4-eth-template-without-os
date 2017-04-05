@@ -91,6 +91,7 @@ added to this list. */
 static CLI_Definition_List_Item_t xRegisteredCommands =
 {
 	&xHelpCommand,	/* The first command in the list is always the help command, defined in this file. */
+    
 	NULL			/* The next pointer is initialised to NULL, as there are no other registered commands yet. */
 };
 
@@ -122,11 +123,11 @@ CLI_Definition_List_Item_t *pxNewListItem;
 BaseType_t xReturn = pdFAIL;
 
 	/* Check the parameter is not NULL. */
-	configASSERT( pxCommandToRegister );
+	//configASSERT( pxCommandToRegister );
 
 	/* Create a new list item that will reference the command being registered. */
-	pxNewListItem = ( CLI_Definition_List_Item_t * ) pvPortMalloc( sizeof( CLI_Definition_List_Item_t ) );
-	configASSERT( pxNewListItem );
+	pxNewListItem = ( CLI_Definition_List_Item_t * ) malloc( sizeof( CLI_Definition_List_Item_t ) );
+	//configASSERT( pxNewListItem );
 
 	if( pxNewListItem != NULL )
 	{
@@ -306,7 +307,8 @@ BaseType_t xReturn;
 
 	/* Return the next command help string, before moving the pointer on to
 	the next command in the list. */
-	strncpy( pcWriteBuffer, pxCommand->pxCommandLineDefinition->pcHelpString, xWriteBufferLen );
+	//strncpy( pcWriteBuffer, pxCommand->pxCommandLineDefinition->pcHelpString, xWriteBufferLen );
+    debug(info,"%s",pxCommand->pxCommandLineDefinition->pcHelpString);
 	pxCommand = pxCommand->pxNext;
 
 	if( pxCommand == NULL )

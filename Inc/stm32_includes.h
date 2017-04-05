@@ -10,6 +10,8 @@
 #include <math.h>
 
 
+#include "stm32f4xx_ll_usart.h"
+
 
 #include "lwip/debug.h"
 #include "lwip/stats.h"

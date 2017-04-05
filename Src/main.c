@@ -158,8 +158,10 @@ int main(void)
   //{test_rect();}
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+    vRegisterSampleCLICommands();
   while (1)
   {
+      prvUARTCommandConsoleTask();
   /* USER CODE END WHILE */
     //if (HAL_ETH_CheckFrameReceived())
     //{ 
@@ -167,9 +169,11 @@ int main(void)
     //  LwIP_Pkt_Handle();
     //}
     /* handle periodic timers for LwIP*/
+    /*
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_RESET);
     LwIP_Periodic_Handle(sys_now());
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_1, GPIO_PIN_SET);
+    */
   /* USER CODE BEGIN 3 */
 
   }
@@ -248,6 +252,8 @@ static void MX_USART1_UART_Init(void)
   {
     Error_Handler();
   }
+  LL_USART_EnableIT_RXNE(USART1);
+  LL_USART_EnableIT_ERROR(USART1);
 
 }
 

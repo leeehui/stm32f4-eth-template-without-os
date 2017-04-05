@@ -7,8 +7,6 @@ extern UART_HandleTypeDef huart1;
 
 #define DEBUG_USART huart1
 
-#define TERMINATOR  ('\n')
-#define CMD_UART_RX_BUFFER_SIZE  1000
 
 
 int fputc(int ch, FILE *f);

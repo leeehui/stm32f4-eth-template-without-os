@@ -8,26 +8,30 @@
 #define ARRAY_SIZE  (QUEUE_SIZE + 1)
 
 static QUEUE_TYPE  queue[ARRAY_SIZE];
-static size_t front = 1;
-static size_t rear = 0;
+static volatile size_t front = 1;
+static volatile size_t rear = 0;
 
-void insert(QUEUE_TYPE value)
+int queue_put(QUEUE_TYPE value)
 {
-	assert(!is_full());
+	if(is_full())
+    {
+        //debug(info, "queue is full!");
+        return -1;
+    }
 	rear = (rear + 1) % ARRAY_SIZE;
 	queue[rear] = value;	
 }
 
-void delete(void)
+int queue_get(QUEUE_TYPE *value)
 {
-	assert(!is_empty());
+	if(is_empty())
+    {
+        //debug(info, "queue is empty!");
+        return -1;
+    }
+    *value = queue[front];
 	front = (front + 1) % ARRAY_SIZE;
-}
-
-QUEUE_TYPE first(void)
-{
-	assert(!is_empty());
-	return queue[front];
+    return 0;
 }
 
 int is_empty(void)
