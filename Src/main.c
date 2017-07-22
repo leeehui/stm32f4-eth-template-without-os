@@ -158,10 +158,10 @@ int main(void)
   //{test_rect();}
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    vRegisterSampleCLICommands();
+  vRegisterSampleCLICommands();
   while (1)
   {
-      prvUARTCommandConsoleTask();
+     prvUARTCommandConsoleTask();
   /* USER CODE END WHILE */
     //if (HAL_ETH_CheckFrameReceived())
     //{ 

@@ -175,7 +175,10 @@ void test_rect()
 
         led_buffer[0][0] = 0;
         led_buffer[0][1] = 255;
-        led_buffer[0][2] = 0;
+        led_buffer[0][2] = 255;
+        led_buffer[0][3] = 0;
+        led_buffer[0][4] = 0;
+        led_buffer[0][5] = 255;
         ws2812_send(&led_buffer[0][0], 
                    &led_buffer[1][0],
                    &led_buffer[2][0],
@@ -188,6 +191,9 @@ void test_rect()
         led_buffer[0][0] = 255;
         led_buffer[0][1] = 0;
         led_buffer[0][2] = 0;
+        led_buffer[0][3] = 255;
+        led_buffer[0][4] = 255;
+        led_buffer[0][5] = 0;
         ws2812_send(&led_buffer[0][0], 
                    &led_buffer[1][0],
                    &led_buffer[2][0],

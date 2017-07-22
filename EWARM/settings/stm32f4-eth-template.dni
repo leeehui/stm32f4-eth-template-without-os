@@ -12,7 +12,7 @@ ByteLimit=50
 stlinkserialNo=DDFEBA75
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=-658346268
+Checksum=543805552
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -66,10 +66,9 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
-[Log file]
+[TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-Category=_ 0
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -78,16 +77,18 @@ Mode=3
 Graph=0
 Symbiont=0
 Exclusions=
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_server\tcp_echoserver.c}.475.5" 0 0 1 "" 0 "" 0
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\Src\ethernetif.c}.311.1" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Src\stm32f4xx_it.c}.199.3" 0 0 1 "" 0 "" 0
-Count=3
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_led_ctrl\tcp_led_ctrl.c}.212.1" 0 0 1 "" 0 "" 0
+Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\Apps\tcp_led_ctrl\tcp_led_ctrl.c}.212.5" 0 0 1 "" 0 "" 0
+Count=4
 [Aliases]
 Count=0
 SuppressDialog=0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
